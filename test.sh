@@ -100,4 +100,38 @@ else
 fi
 rm test6&7_maze.txt
 
+# Test8: Success
+echo "Test8: Success"
+cat << EOF > test8_maze.txt                                                            #######
+#SE # #
+##  ###
+#    ##
+###   #
+#   ###
+#######
+EOF
 
+output=$(echo -e "D" | ./maze text8_maze.txt)
+if [[ $output == *"Congratulations"* ]] && [[ $? -eq 0 ]]; then
+	echo "pass"
+else
+	echo "fail"
+fi
+
+# Test9: Move after success
+echo "Test9: Move after success"
+output=$(echo -e "D\nD" | ./maze text8_maze.txt 2>&1)
+if [[ $output != *"Move right"* ]]; then
+	echo "pass"
+else
+	echo "fail"
+fi
+
+# Test10: Invalid input
+echo "Test10: Invalid input"
+output=$(echo -e "z" | ./maze text8_maze.txt)
+if [[ $output == "Invalid input" ]]; then
+	echo "pass"
+else
+	echo "fail"
+fi
