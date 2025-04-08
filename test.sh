@@ -19,53 +19,31 @@ else
 fi
 
 # Test3: Small maze(4*4)
-echo "Test3:Small maze(4*4)"
-cat << EOF > small_maze.tst
-####
-#S #
-# E#
-####
-EOF
-output=$(./maze small_maze.txt 2>&1)
+echo "Test3: Small maze(4*4)"
+output=$(./maze test_data/smallMaze.txt 2>&1)
 if [[ $output == *"Invalid dimensions"* ]]; then
 	echo "pass"
 else
 	echo "fail"
 fi
-rm small_maze.txt
 
 # Test4: Move right
 echo "Text4: Move right"
-cat << EOF > test4_maze.txt
-#####
-#S  #
-#  ##
-#  E#
-#####
-EOF
-output=$(echo -e "d\nq" | ./maze text4_maze.txt)
+output=$(echo -e "d\nq" | ./maze test_data/hitWallMaze.txt)
 if [[ $output == *"Move right"* ]]; then
 	echo "pass"
 else
 	echo "fail"
 fi
-rm test4_txt
 
 # Test5: Hit wall
 echo "Test5: Hit wall"
-cat << EOF > test5_maze.txt                                                            #####
-#S  #
-#  ##
-#  E#
-#####
-EOF
-output=$(echo -e "a" | ./maze text5_maze.txt)
+output=$(echo -e "a" | ./maze test_data/hitWallMaze.txt)
 if [[ $output == *"Can't move"* ]]; then
         echo "pass"
 else
         echo "fail"
 fi
-rm test5_txt
 
 # Test6&7: Open map & Map update
 run_maze() {
@@ -73,18 +51,9 @@ run_maze() {
 	local input_sequence="$2"
 	echo -e "$input_sequence" | ./maze "$maze_file"
 }
-cat << EOF > test6&7_maze.txt                                                          
-#######
-#S  # #
-##  ###
-#    ##
-###   #
-#E  ###
-#######
-EOF
 
 echo "Test6: Open map"
-output=$(run_maze "test6&7_maze.txt" "M\nQ")
+output=$(run_maze "test_data/validMaze.txt" "M\nQ")
 if [[ $output == *"X"* && $output == *"#######"* ]]; then
 	echo "pass"
 else
@@ -92,7 +61,7 @@ else
 fi
 
 echo "Test7: Map update"
-output=$(run_maze "test6&7_maze.txt" "D\nM\nQ")
+output=$(run_maze "test_data/validMaze.txt" "D\nM\nQ")
 if [[ $output == * X* ]]; then
 	echo "pass"
 else
@@ -102,16 +71,8 @@ rm test6&7_maze.txt
 
 # Test8: Success
 echo "Test8: Success"
-cat << EOF > test8_maze.txt                                                            #######
-#SE # #
-##  ###
-#    ##
-###   #
-#   ###
-#######
-EOF
 
-output=$(echo -e "D" | ./maze text8_maze.txt)
+output=$(echo -e "D" | ./maze test_data/test8maze.txt)
 if [[ $output == *"Congratulations"* ]] && [[ $? -eq 0 ]]; then
 	echo "pass"
 else
@@ -120,7 +81,7 @@ fi
 
 # Test9: Move after success
 echo "Test9: Move after success"
-output=$(echo -e "D\nD" | ./maze text8_maze.txt 2>&1)
+output=$(echo -e "D\nD" | ./maze test_data/test8maze.txt 2>&1)
 if [[ $output != *"Move right"* ]]; then
 	echo "pass"
 else
@@ -129,7 +90,7 @@ fi
 
 # Test10: Invalid input
 echo "Test10: Invalid input"
-output=$(echo -e "z" | ./maze text8_maze.txt)
+output=$(echo -e "z" | ./maze test_data/test8maze.txt)
 if [[ $output == "Invalid input" ]]; then
 	echo "pass"
 else
