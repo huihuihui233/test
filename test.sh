@@ -27,14 +27,24 @@ else
 	echo "fail"
 fi
 
-# Test4: Move right
-echo "Text4: Move right"
-output=$(echo -e "d\nq" | ./maze test_data/hitWallMaze.txt)
-if [[ $output == *"Move right"* ]]; then
-	echo "pass"
-else
-	echo "fail"
-fi
+# Test4: Move
+echo "Text4: Move"
+./maze test_data_validMaze.txt < test_data/test4input.txt > test4output.txt 2>&1
+
+declare -a expected_keywords=(
+	"Move right"
+	"Move down"
+	"Move up"
+	"Move left"
+)
+for keyword in "${expected_keywords[@]}"; do
+	if ! grep -q "$keyword" test4output.txt: then
+		echo "fall"
+	fi
+done
+
+echo "pass"
+rm text4output.txt
 
 # Test5: Hit wall
 echo "Test5: Hit wall"
@@ -96,3 +106,34 @@ if [[ $output == "Invalid input" ]]; then
 else
 	echo "fail"
 fi
+
+# Test11: Quit
+echo "Test11: Quit"
+output=$(echo "Q" | ./maze test_data/validMaze.txt 2>&1)
+exit_code=$?
+
+if [ $exit_code -ne 0 ]; then
+	echo "Q fail to quit"
+	exit 1
+fi
+
+if ! echo "$output" | grep -q "Exiting game"; then
+	echo "Q fail to show exit prompt"
+	exit 1
+fi
+
+output=$(echo "q" | ./maze test_data/validMaze.txt 2>&1)
+exit_code=$?
+
+if [ $exit_code -ne 0 ]; then
+        echo "q fail to quit"
+        exit 1
+fi
+
+if ! echo "$output" | grep -q "Exiting game"; then
+        echo "q fail to show exit prompt"
+        exit 1
+fi
+
+echo "pass"
+exit 0
